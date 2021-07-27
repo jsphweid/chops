@@ -3,8 +3,15 @@ def hex_to_int(hexstr: str) -> int:
     If you didn't have `int("FF", 16)` you'd have to do something like this
     Saw this first in the initial commit of git
 
-    The algorithm here is iterating through the chars right to left
+    The algorithm here is iterating through the chars right to left and
     left shifting each char's value then merging it with the result
+
+    example FE (1111 1110)
+    0000 0000 - base
+
+    0000 1110 - shift 0 * 4
+    1111 0000 - shift 1 * 4
+    1111 1110 - combine with bitwise `|` (could also use `+` in this case)
     """
 
     final_num = 0
