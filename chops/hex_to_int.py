@@ -6,11 +6,11 @@ def hex_to_int(hexstr: str) -> int:
     The algorithm here is iterating through the chars right to left and
     left shifting each char's value then merging it with the result
 
-    example FE (1111 1110)
+    example "FE" (1111 1110)
     0000 0000 - base
 
-    0000 1110 - shift 0 * 4
-    1111 0000 - shift 1 * 4
+    0000 1110 - ("F") shift 0 * 4
+    1111 0000 - ("E") shift 1 * 4
     1111 1110 - combine with bitwise `|` (could also use `+` in this case)
     """
 
