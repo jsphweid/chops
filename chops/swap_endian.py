@@ -22,11 +22,13 @@ def swap_endian(hex_str: str) -> str:
 
     original_int = hex_to_int(hex_str)
 
+    # Probably can't shift the last bit easily (without masking) to
+    # the front in vanilla python because there is no int overflow
     if num_bytes == 2:
-        output = output | (0xFF00 & original_int) >> 8
+        output = output | original_int >> 8
         output = output | (0x00FF & original_int) << 8
     elif num_bytes == 4:
-        output = output | (0xFF000000 & original_int) >> 24
+        output = output | original_int >> 24
         output = output | (0x00FF0000 & original_int) >> 8
         output = output | (0x0000FF00 & original_int) << 8
         output = output | (0x000000FF & original_int) << 24
