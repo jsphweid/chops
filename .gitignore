@@ -1,0 +1,7 @@
+venv
+.pytest_cache
+.idea
+__pycache__
+.DS_Store
+cmake-build-debug/
+*.out
