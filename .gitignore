@@ -5,3 +5,6 @@ __pycache__
 .DS_Store
 cmake-build-debug/
 *.out
+bazel-*
+.bazelrc
+.vscode

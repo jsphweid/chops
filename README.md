@@ -5,4 +5,7 @@ run tests with
 `pytest tests`
 
 ## c stuff
-pretty unorganized for now
+run tests with 
+```bash
+bazel test $(bazel query //...)
+```
