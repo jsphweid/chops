@@ -10,7 +10,7 @@ static void TestGetStrLength() {
     CHECK(getStringLength("abc") == 3);
 }
 
-int main(int argc, char **argv) {
+int main() {
     TestGetStrLength();
 
     puts("PASS");

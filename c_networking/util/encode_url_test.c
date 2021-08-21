@@ -25,7 +25,7 @@ static void TestEncodeUrlWorks() {
     CHECK(result[14] == 'm');
 }
 
-int main(int argc, char** argv) {
+int main() {
     TestEncodeUrlWorks();
 
     puts("PASS");

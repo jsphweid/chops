@@ -4,6 +4,7 @@ cc_binary(
     deps = [
         "//util:encode_url",
         "//util:ip_string",
+        "//util:random",
         "//util:str",
     ],
 )

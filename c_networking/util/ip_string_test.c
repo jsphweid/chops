@@ -28,7 +28,7 @@ static void TestByteArrayToIPStrWorksWithAnother() {
     CHECK(result[len] == '\0');
 }
 
-int main(int argc, char** argv) {
+int main() {
     TestByteArrayToIPStrWorksSimple();
     TestByteArrayToIPStrWorksWithAnother();
 

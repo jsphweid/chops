@@ -7,6 +7,7 @@
 
 #include "util/encode_url.h"
 #include "util/ip_string.h"
+#include "util/random.h"
 #include "util/str.h"
 
 #define UDP_PORT 53
@@ -97,9 +98,10 @@ int main(int argc, char **argv) {
 
     addrlen = sizeof(addr);
 
-    // 2 byte random transaction id (can just use af 70 hex) TODO: actually make random
-    buffer[0] = 0xaf;
-    buffer[1] = 0x70;
+    // 2 byte transaction id
+    short transactionId = getRandomTwoByteId();
+    buffer[0] = transactionId >> 8;
+    buffer[1] = transactionId;
     // 2 byte flag, use 01 00
     buffer[2] = 0x01;
     buffer[3] = 0x00;

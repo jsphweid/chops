@@ -33,6 +33,22 @@ c_test(
 )
 
 c_library(
+    name = "random",
+    srcs = ["random.c"],
+    hdrs = ["random.h"],
+    visibility = ["//visibility:public"],
+)
+
+c_test(
+    name = "random_test",
+    srcs = ["random_test.c"],
+    deps = [
+        ":random",
+        ":test_utils",
+    ],
+)
+
+c_library(
     name = "str",
     srcs = ["str.c"],
     hdrs = ["str.h"],
