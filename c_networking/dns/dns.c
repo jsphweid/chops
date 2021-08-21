@@ -77,7 +77,6 @@ int main(int argc, char **argv) {
     int sockfd;
     uint addrlen;
     char *url = argv[1];
-    char *encodedUrl;
     int urlLength = getStringLength(url);
     int encodedUrlLength = urlLength + 1;
     int dataLength = 17 + encodedUrlLength;
@@ -118,7 +117,8 @@ int main(int argc, char **argv) {
     buffer[10] = 0x00;
     buffer[11] = 0x00;
     // query with length, but padded 1 byte on each side (0a to start, 00 to end)
-    encodedUrl = encodeUrl(url, urlLength);
+    char *encodedUrl = malloc(urlLength + 1);
+    encodeUrl(encodedUrl, url, urlLength);
     memcpy(&buffer[12], encodedUrl, encodedUrlLength);  // (void *dst, const void *src, size_t n)
     free(encodedUrl);
     buffer[12 + encodedUrlLength] = 0x00;

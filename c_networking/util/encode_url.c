@@ -3,19 +3,19 @@
 #include <stdlib.h>
 #include <string.h>
 
-char *encodeUrl(char *url, int urlLength) {
+// TODO: my issue with this function is that the caller must know
+// that it needs to know the exact size of the buffer to be urlLength + 1
+char *encodeUrl(char *ret, char *url, int urlLength) {
     // Example:
     // thing.test.com
     // t h i n g . t e s t . c o m   - input
     // 5 t h i n g 4 t e s t 3 c o m - ret
     // 0 1 2 3 4 5 6 7 8 9 a b c d e - hex
     uint8_t i, offset, len;
-    char *ret;
 
     offset = 1;
     len = 0;
 
-    ret = malloc(urlLength + 1);
     for (i = 0; i < urlLength; i++) {
         if (url[i] == '.') {
             ret[offset - 1] = len;

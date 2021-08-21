@@ -1,1 +1,1 @@
-char *encodeUrl(char *url, int urlLength);
+char *encodeUrl(char *buffer, char *url, int urlLength);

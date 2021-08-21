@@ -7,22 +7,24 @@
 static void TestEncodeUrlWorks() {
     char* url = "thing.test.com";
     int len = strlen(url);
-    char* result = encodeUrl(url, len);
-    CHECK(result[0] == 5);
-    CHECK(result[1] == 't');
-    CHECK(result[2] == 'h');
-    CHECK(result[3] == 'i');
-    CHECK(result[4] == 'n');
-    CHECK(result[5] == 'g');
-    CHECK(result[6] == 4);
-    CHECK(result[7] == 't');
-    CHECK(result[8] == 'e');
-    CHECK(result[9] == 's');
-    CHECK(result[10] == 't');
-    CHECK(result[11] == 3);
-    CHECK(result[12] == 'c');
-    CHECK(result[13] == 'o');
-    CHECK(result[14] == 'm');
+    char* buffer = malloc(len + 1);
+    encodeUrl(buffer, url, len);
+    CHECK(buffer[0] == 5);
+    CHECK(buffer[1] == 't');
+    CHECK(buffer[2] == 'h');
+    CHECK(buffer[3] == 'i');
+    CHECK(buffer[4] == 'n');
+    CHECK(buffer[5] == 'g');
+    CHECK(buffer[6] == 4);
+    CHECK(buffer[7] == 't');
+    CHECK(buffer[8] == 'e');
+    CHECK(buffer[9] == 's');
+    CHECK(buffer[10] == 't');
+    CHECK(buffer[11] == 3);
+    CHECK(buffer[12] == 'c');
+    CHECK(buffer[13] == 'o');
+    CHECK(buffer[14] == 'm');
+    free(buffer);
 }
 
 int main() {
