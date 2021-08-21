@@ -68,37 +68,9 @@ void printAnswers(Answer *out, unsigned char *blob, int blobLen, int numAnswers)
     }
 }
 
-int main(int argc, char **argv) {
-    if (argc != 2) {
-        printf("Requires one arg, like `laughtears.com`");
-        exit(1);
-    }
-
-    int sockfd;
-    uint addrlen;
-    char *url = argv[1];
-    int urlLength = getStringLength(url);
+void buildBuffer(char *buffer, unsigned short transactionId, char *url, int urlLength) {
     int encodedUrlLength = urlLength + 1;
-    int dataLength = 17 + encodedUrlLength;
-    struct sockaddr_in addr;
-    struct sockaddr *converted_addr;
-    struct in_addr ap;
 
-    unsigned char *buffer = malloc(dataLength);
-
-    sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-
-    inet_aton("8.8.8.8", &ap);
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(UDP_PORT);
-    addr.sin_addr = ap;
-
-    converted_addr = (struct sockaddr *)&addr;
-
-    addrlen = sizeof(addr);
-
-    // 2 byte transaction id
-    short transactionId = getRandomTwoByteId();
     buffer[0] = transactionId >> 8;
     buffer[1] = transactionId;
     // 2 byte flag, use 01 00
@@ -116,7 +88,7 @@ int main(int argc, char **argv) {
     // 2 byte additional rr, use 00 00
     buffer[10] = 0x00;
     buffer[11] = 0x00;
-    // query with length, but padded 1 byte on each side (0a to start, 00 to end)
+    // dynamic sized query
     char *encodedUrl = malloc(urlLength + 1);
     encodeUrl(encodedUrl, url, urlLength);
     memcpy(&buffer[12], encodedUrl, encodedUrlLength);  // (void *dst, const void *src, size_t n)
@@ -128,41 +100,71 @@ int main(int argc, char **argv) {
     // 2 byte class, use 00 01
     buffer[15 + encodedUrlLength] = 0x00;
     buffer[16 + encodedUrlLength] = 0x01;
+}
+
+int main(int argc, char **argv) {
+    if (argc != 2) {
+        printf("Requires one arg, like `laughtears.com`");
+        exit(1);
+    }
+
+    int sockfd;
+    uint addrlen;
+    struct sockaddr_in addr;
+    struct sockaddr *converted_addr;
+    struct in_addr ap;
+
+    sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
+    inet_aton("8.8.8.8", &ap);
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(UDP_PORT);
+    addr.sin_addr = ap;
+
+    converted_addr = (struct sockaddr *)&addr;
+
+    addrlen = sizeof(addr);
+
+    unsigned short transactionId = getRandomTwoByteId();
+    char *url = argv[1];
+    int urlLength = getStringLength(url);
+    int encodedUrlLength = urlLength + 1;
+    int dataLength = 17 + encodedUrlLength;
+    char *buffer = malloc(dataLength);
+    buildBuffer(buffer, transactionId, url, urlLength);
 
     if (sendto(sockfd, buffer, dataLength, 0, converted_addr, addrlen) == -1) {
         puts("sendto failed somehow...");
         return -1;
     }
+    free(buffer);
 
     // get response from socket
     int size;
-    unsigned char *response_buffer;
-    unsigned char temp_buffer[MAX_RESPONSE_BYTES] = {0};
-    size = recv(sockfd, temp_buffer, 100, 0);
-    response_buffer = malloc(size);
-    memcpy(response_buffer, temp_buffer, size);
+    unsigned char *responseBufffer;
+    unsigned char tempBuffer[MAX_RESPONSE_BYTES] = {0};
+    size = recv(sockfd, tempBuffer, 100, 0);
+    responseBufffer = malloc(size);
+    memcpy(responseBufffer, tempBuffer, size);
 
     // 2 bytes like before
-    if (buffer[0] != response_buffer[0] || buffer[1] != response_buffer[1]) {
+    if (transactionId != (responseBufffer[0] << 8 | responseBufffer[1])) {
         puts("Transactions IDs didn't match...");
         return -1;
     }
 
-    // should be done with this by this point
-    free(buffer);
-
     // next 2 bytes are flags
     // There's probably lots of stuff we could/should do here, but minimum is make sure no errors...
-    if (response_buffer[3] & 0x0F) {  // i.e. mask last 4 bits of these 2 bytes
+    if (responseBufffer[3] & 0x0F) {  // i.e. mask last 4 bits of these 2 bytes
         // if not 0000...
         puts("There was some error...");
         return -1;
     }
 
-    // skip questions (response_buffer[4-5])
+    // skip questions (responseBuffer[4-5])
 
     // assert answers >= 1
-    uint16_t numAnswers = (response_buffer[6] << 8) | response_buffer[7];
+    uint16_t numAnswers = (responseBufffer[6] << 8) | responseBufffer[7];
     if (numAnswers == 0) {
         puts("There were no answers...");
         return -1;
@@ -174,7 +176,7 @@ int main(int argc, char **argv) {
 
     struct Answer *parsedAnswers = malloc(sizeof(Answer));
     int offsetToAnswers = 8 + 4 + encodedUrlLength + 5;
-    printAnswers(parsedAnswers, offsetToAnswers + response_buffer, size - offsetToAnswers, numAnswers);
+    printAnswers(parsedAnswers, offsetToAnswers + responseBufffer, size - offsetToAnswers, numAnswers);
     int j;
     for (j = 0; j < numAnswers; j++) {
         printf("Answer #%d \n", j + 1);
@@ -185,7 +187,7 @@ int main(int argc, char **argv) {
 
     // is this even necessary
     free(parsedAnswers);
-    free(response_buffer);
+    free(responseBufffer);
 
     return 1;
 }
