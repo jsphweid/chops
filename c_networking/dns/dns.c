@@ -11,7 +11,7 @@
 #include "util/str.h"
 
 #define UDP_PORT 53
-#define MAX_RESPONSE_BYTES 1024
+#define MAX_RESPONSE_BYTES 128
 
 typedef struct Answer {
     char *type;
@@ -114,15 +114,42 @@ struct sockaddr_in buildDnsDestAddr() {
     return addr;
 }
 
+unsigned short getNumAnswers(int size, unsigned short transactionId, unsigned char *responseBuffer) {
+    if (size < 20) {
+        // 20 is arbitrary, not sure this is worth
+        puts("Response wasn't long enough to be meaningful... something is definitely wrong");
+        return -1;
+    }
+
+    // check to make sure the transactionId is correct
+    if (transactionId != (responseBuffer[0] << 8 | responseBuffer[1])) {
+        puts("Transactions IDs didn't match...");
+        return -1;
+    }
+
+    // next 2 bytes are flags
+    // There's probably lots of stuff we could/should do here, but minimum is make sure no errors...
+    if (responseBuffer[3] & 0x0F) {  // i.e. mask last 4 bits of these 2 bytes
+        // if not 0000...
+        puts("There was some error...");
+        return -1;
+    }
+
+    // assert answers >= 1
+    return (responseBuffer[6] << 8) | responseBuffer[7];
+}
+
 int main(int argc, char **argv) {
     if (argc != 2) {
         printf("Requires one arg, like `laughtears.com`");
         exit(1);
     }
 
+    // open socket
     int sockfd;
     sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
+    // make request to dns server
     unsigned short transactionId = getRandomTwoByteId();
     char *url = argv[1];
     int urlLength = getStringLength(url);
@@ -141,39 +168,23 @@ int main(int argc, char **argv) {
     free(buffer);
 
     // get response from socket
-    int size;
-    unsigned char *responseBuffer;
-    unsigned char tempBuffer[MAX_RESPONSE_BYTES] = {0};
-    size = recv(sockfd, tempBuffer, 100, 0);
-    responseBuffer = malloc(size);
+    char *tempBuffer = malloc(MAX_RESPONSE_BYTES);
+    int size = recv(sockfd, tempBuffer, MAX_RESPONSE_BYTES, 0);
+    if (size == MAX_RESPONSE_BYTES) {
+        // TODO: how can we avoid using MAX_RESPONSE_BYTES?
+        puts("Haven't handled the case where we read in the MAX_RESPONSE_BYTES...");
+        return -1;
+    }
+    unsigned char *responseBuffer = malloc(size);
     memcpy(responseBuffer, tempBuffer, size);
+    free(tempBuffer);
 
-    // 2 bytes like before
-    if (transactionId != (responseBuffer[0] << 8 | responseBuffer[1])) {
-        puts("Transactions IDs didn't match...");
+    unsigned short numAnswers = getNumAnswers(size, transactionId, responseBuffer);
+    if (numAnswers < 0) {
         return -1;
+    } else if (numAnswers == 0) {
+        puts("Response had no answers...");
     }
-
-    // next 2 bytes are flags
-    // There's probably lots of stuff we could/should do here, but minimum is make sure no errors...
-    if (responseBuffer[3] & 0x0F) {  // i.e. mask last 4 bits of these 2 bytes
-        // if not 0000...
-        puts("There was some error...");
-        return -1;
-    }
-
-    // skip questions (responseBuffer[4-5])
-
-    // assert answers >= 1
-    uint16_t numAnswers = (responseBuffer[6] << 8) | responseBuffer[7];
-    if (numAnswers == 0) {
-        puts("There were no answers...");
-        return -1;
-    }
-
-    // skip next 2+2 bytes because I don't care
-    // skip next `encodedUrlLength` IDs matching should be good enough
-    // skip the 4 bits after
 
     struct Answer *parsedAnswers = malloc(sizeof(Answer));
     int offsetToAnswers = 8 + 4 + encodedUrlLength + 5;
