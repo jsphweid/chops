@@ -102,6 +102,18 @@ void buildBuffer(char *buffer, unsigned short transactionId, char *url, int urlL
     buffer[16 + encodedUrlLength] = 0x01;
 }
 
+struct sockaddr_in buildDnsDestAddr() {
+    // TODO: how do we not return a whole struct? Is this bad?
+    // You can't return a point that gets created in the fn obviously. You could malloc a single byte? idk
+    struct sockaddr_in addr;
+    struct in_addr ap;
+    inet_aton("8.8.8.8", &ap);
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(UDP_PORT);
+    addr.sin_addr = ap;
+    return addr;
+}
+
 int main(int argc, char **argv) {
     if (argc != 2) {
         printf("Requires one arg, like `laughtears.com`");
@@ -109,21 +121,7 @@ int main(int argc, char **argv) {
     }
 
     int sockfd;
-    uint addrlen;
-    struct sockaddr_in addr;
-    struct sockaddr *converted_addr;
-    struct in_addr ap;
-
     sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-
-    inet_aton("8.8.8.8", &ap);
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(UDP_PORT);
-    addr.sin_addr = ap;
-
-    converted_addr = (struct sockaddr *)&addr;
-
-    addrlen = sizeof(addr);
 
     unsigned short transactionId = getRandomTwoByteId();
     char *url = argv[1];
@@ -132,8 +130,11 @@ int main(int argc, char **argv) {
     int dataLength = 17 + encodedUrlLength;
     char *buffer = malloc(dataLength);
     buildBuffer(buffer, transactionId, url, urlLength);
+    struct sockaddr_in addr = buildDnsDestAddr();
+    struct sockaddr *destAddr = (struct sockaddr *)&addr;
+    uint addrlen = sizeof(struct sockaddr_in);
 
-    if (sendto(sockfd, buffer, dataLength, 0, converted_addr, addrlen) == -1) {
+    if (sendto(sockfd, buffer, dataLength, 0, destAddr, addrlen) == -1) {
         puts("sendto failed somehow...");
         return -1;
     }
