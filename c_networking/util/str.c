@@ -13,3 +13,12 @@ void printStr(char *str) {
         printf("%c", str[i]);
     }
 }
+
+void printBlob(unsigned char *blob, int len) {
+    int i = -1;
+    printf("blob (len = %d) -> ", len);
+    while (i++ < len) {
+        printf("%02x ", blob[i]);
+    }
+    printf("\n");
+}

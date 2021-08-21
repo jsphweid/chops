@@ -13,63 +13,37 @@
 #define UDP_PORT 53
 #define MAX_RESPONSE_BYTES 128
 
-typedef struct Answer {
-    char *type;
-    char *content;
-} Answer;
-
-void printBlob(unsigned char *blob, int len) {
-    int i = -1;
-    printf("blob (len = %d) -> ", len);
-    while (i++ < len) {
-        printf("%02x ", blob[i]);
-    }
-    printf("\n");
-}
-
-void printAnswers(Answer *out, unsigned char *blob, int blobLen, int numAnswers) {
+void printAnswers(unsigned char *responseBuffer, int numAnswers, uint8_t encodedUrlLength) {
     int i;
     int offset = 0;
     uint8_t isARecord, isCName;
 
-    printBlob(blob, blobLen);
-    for (i = 0; i < numAnswers; i++) {
-        isARecord = blob[3 + offset] == 0x01;
-        isCName = blob[3 + offset] == 0x05;
+    int offsetToAnswers = 8 + 4 + encodedUrlLength + 5;
+    unsigned char *answersSection = responseBuffer + offsetToAnswers;
 
-        if (blob[2 + offset] != 0x00 ||
+    for (i = 0; i < numAnswers; i++) {
+        isARecord = answersSection[3 + offset] == 0x01;
+        isCName = answersSection[3 + offset] == 0x05;
+
+        if (answersSection[2 + offset] != 0x00 ||
             (!isARecord && !isCName)) {
             puts("Skipping answer because it contains something other than a CNAME or IP");
             continue;
         }
 
-        Answer *answer;
-        answer = malloc(sizeof(struct Answer));
-
-        if (isARecord) {
-            answer->type = "A RECORD";
-        } else {
-            answer->type = "CNAME";
-        }
-
         uint8_t contentSize;
-        contentSize = (blob[10 + offset] << 8) | blob[11 + offset];
+        contentSize = (answersSection[10 + offset] << 8) | answersSection[11 + offset];
         if (isARecord) {
-            char *ipStr = byteArrayToIPStr(&blob[12 + offset]);
-            puts(ipStr);
-            answer->content = ipStr;
+            printf("Found A Record -> %s\n", byteArrayToIPStr(&answersSection[12 + offset]));
         } else {
-            char *ptr = malloc(contentSize + 1);
-            memcpy(ptr, &blob[12 + offset], contentSize);
-            answer->content = ptr;
+            printf("Found CNAME -> %s\n", &answersSection[12 + offset]);
         }
-        out[i] = *answer;
         offset += 12 + contentSize;
     }
 }
 
 void buildBuffer(char *buffer, unsigned short transactionId, char *url, int urlLength) {
-    int encodedUrlLength = urlLength + 1;
+    uint8_t encodedUrlLength = urlLength + 1;
 
     buffer[0] = transactionId >> 8;
     buffer[1] = transactionId;
@@ -152,8 +126,8 @@ int main(int argc, char **argv) {
     // make request to dns server
     unsigned short transactionId = getRandomTwoByteId();
     char *url = argv[1];
-    int urlLength = getStringLength(url);
-    int encodedUrlLength = urlLength + 1;
+    uint8_t urlLength = getStringLength(url);
+    uint8_t encodedUrlLength = urlLength + 1;
     int dataLength = 17 + encodedUrlLength;
     char *buffer = malloc(dataLength);
     buildBuffer(buffer, transactionId, url, urlLength);
@@ -186,20 +160,9 @@ int main(int argc, char **argv) {
         puts("Response had no answers...");
     }
 
-    struct Answer *parsedAnswers = malloc(sizeof(Answer));
-    int offsetToAnswers = 8 + 4 + encodedUrlLength + 5;
-    printAnswers(parsedAnswers, offsetToAnswers + responseBuffer, size - offsetToAnswers, numAnswers);
-    int j;
-    for (j = 0; j < numAnswers; j++) {
-        printf("Answer #%d \n", j + 1);
-        puts(parsedAnswers[j].type);
-        puts(parsedAnswers[j].content);
-    }
-    printf("Exiting...");
-
-    // is this even necessary
-    free(parsedAnswers);
+    printAnswers(responseBuffer, numAnswers, encodedUrlLength);
     free(responseBuffer);
+    printf("Exiting...");
 
     return 1;
 }
