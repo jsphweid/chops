@@ -1,4 +1,6 @@
-cc_binary(
+load("//:defs.bzl", "c_binary")
+
+c_binary(
     name = "dns",
     srcs = ["dns.c"],
     deps = [
