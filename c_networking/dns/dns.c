@@ -142,21 +142,21 @@ int main(int argc, char **argv) {
 
     // get response from socket
     int size;
-    unsigned char *responseBufffer;
+    unsigned char *responseBuffer;
     unsigned char tempBuffer[MAX_RESPONSE_BYTES] = {0};
     size = recv(sockfd, tempBuffer, 100, 0);
-    responseBufffer = malloc(size);
-    memcpy(responseBufffer, tempBuffer, size);
+    responseBuffer = malloc(size);
+    memcpy(responseBuffer, tempBuffer, size);
 
     // 2 bytes like before
-    if (transactionId != (responseBufffer[0] << 8 | responseBufffer[1])) {
+    if (transactionId != (responseBuffer[0] << 8 | responseBuffer[1])) {
         puts("Transactions IDs didn't match...");
         return -1;
     }
 
     // next 2 bytes are flags
     // There's probably lots of stuff we could/should do here, but minimum is make sure no errors...
-    if (responseBufffer[3] & 0x0F) {  // i.e. mask last 4 bits of these 2 bytes
+    if (responseBuffer[3] & 0x0F) {  // i.e. mask last 4 bits of these 2 bytes
         // if not 0000...
         puts("There was some error...");
         return -1;
@@ -165,7 +165,7 @@ int main(int argc, char **argv) {
     // skip questions (responseBuffer[4-5])
 
     // assert answers >= 1
-    uint16_t numAnswers = (responseBufffer[6] << 8) | responseBufffer[7];
+    uint16_t numAnswers = (responseBuffer[6] << 8) | responseBuffer[7];
     if (numAnswers == 0) {
         puts("There were no answers...");
         return -1;
@@ -177,7 +177,7 @@ int main(int argc, char **argv) {
 
     struct Answer *parsedAnswers = malloc(sizeof(Answer));
     int offsetToAnswers = 8 + 4 + encodedUrlLength + 5;
-    printAnswers(parsedAnswers, offsetToAnswers + responseBufffer, size - offsetToAnswers, numAnswers);
+    printAnswers(parsedAnswers, offsetToAnswers + responseBuffer, size - offsetToAnswers, numAnswers);
     int j;
     for (j = 0; j < numAnswers; j++) {
         printf("Answer #%d \n", j + 1);
@@ -188,7 +188,7 @@ int main(int argc, char **argv) {
 
     // is this even necessary
     free(parsedAnswers);
-    free(responseBufffer);
+    free(responseBuffer);
 
     return 1;
 }
