@@ -9,3 +9,7 @@ bazel-*
 .bazelrc
 .vscode
 .clwb
+node_modules
+session.json
+temp.html
+
