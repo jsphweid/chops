@@ -51,7 +51,7 @@ const commands = {
     );
     console.log("*******Time starts now,", start.toLocaleString());
     console.log("*******File is available here ->", absolutePath);
-    await Editor.openInTextEdit(absolutePath);
+    await Editor.openInRandomTextEditor(absolutePath);
     const submitCommand = `./lc.sh submit ${relativePath}`;
     console.log("*******Run this when ready to submit ->", submitCommand);
   },
@@ -65,7 +65,7 @@ const commands = {
       console.error("Couldn't find the solution locally:", filepath);
       Deno.exit();
     }
-    console.log("Submitting...", solutionDetails);
+    console.log("Submitting...");
     const result = await LeetcodeService.submitAnswer({
       code: Deno.readTextFileSync(filepath),
       slug: solutionDetails.leetcodeSlug,

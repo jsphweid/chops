@@ -38,13 +38,10 @@ export namespace Utils {
 
   export const exists = (str?: string): boolean => !!str;
 
-  export const printHTML = async (html: string): Promise<void> => {
-    const tempFile = "temp.html";
-    Deno.writeTextFileSync(tempFile, html);
-
+  export const runCommand = async (command: string[]): Promise<void> => {
     // mostly copied from https://deno.land/manual@v1.12.2/examples/subprocess
     const p = Deno.run({
-      cmd: ["python3", "html2text.py", tempFile],
+      cmd: command,
       stdout: "piped",
       stderr: "piped",
     });
@@ -57,7 +54,12 @@ export namespace Utils {
       const errorString = new TextDecoder().decode(rawError);
       console.log(errorString);
     }
+  };
 
+  export const printHTML = async (html: string): Promise<void> => {
+    const tempFile = "temp.html";
+    Deno.writeTextFileSync(tempFile, html);
+    await runCommand(["python3", "html2text.py", tempFile]);
     Deno.removeSync(tempFile);
   };
 
