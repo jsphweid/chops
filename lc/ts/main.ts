@@ -87,7 +87,10 @@ const commands = {
     console.log(`${text} -- See more details here: ${submissionLink}`);
   },
   report: (args: string[]) => {
-    throw new Error("`report` Not implemented yet...");
+    console.log(
+      "Minutes to first solve (avg):",
+      State.getAverageSecondsToFirstSolve() / 60
+    );
   },
 };
 
