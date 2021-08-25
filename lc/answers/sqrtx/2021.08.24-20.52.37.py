@@ -47,4 +47,19 @@ class Solution:
             start = start - 1
 
         return start
+
+"""
+Reflection on why it's better to start from the top for even distribution of randomness...
+
+The nature of exponentials is that moving around in high numbers covers much more of the
+space compared to lower numbers. For example, going from 10**2 to 9**2 is 100 to 81,
+covering 19 numbers.
+
+Going from 5**2 to 4**2 is 25 to 16, only 9 numbers. And 3**2 to 2**2 is 9 to 4, only 5
+numbers.
+
+It follows that you get more "bang for your buck" if you start with the large numbers
+and go down because each cycle in the `while` loop above covers so much more ground
+for the comparison.
+"""
         
