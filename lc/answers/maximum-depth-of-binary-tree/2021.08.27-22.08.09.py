@@ -77,4 +77,11 @@ class Solution:
 """
 Still can't help but feel there is a better solution for all these types of problems.
 Will revisit again someday.
+
+More notes from the next day... This has to be possible with simple recursion right?
+We don't have state variables but we could just replace the node value with the depth
+since we don't actually care about the values. The trick is getting the first node value
+to be one which seems hard if you don't have a ref to parents, i.e. you can't tell if
+you're on the root node or not. Obviously we could modify the function to call another fn
+but not sure if that's appropriate. Maybe I'll try that.
 """
