@@ -33,7 +33,10 @@ export const getQuestionQuery = (slug: string) => ({
   variables: { titleSlug: slug },
 });
 
-export const getSuggestedQuestionsQuery = (difficulty: Difficulty) => ({
+export const getSuggestedQuestionsQuery = (
+  difficulty: Difficulty,
+  limit: number
+) => ({
   query: `
     query problemsetQuestionList(
       $categorySlug: String
@@ -52,6 +55,7 @@ export const getSuggestedQuestionsQuery = (difficulty: Difficulty) => ({
           title
           titleSlug
           difficulty
+          isPaidOnly
         }
       }
     }
@@ -59,7 +63,7 @@ export const getSuggestedQuestionsQuery = (difficulty: Difficulty) => ({
   variables: {
     categorySlug: "algorithms",
     skip: 0,
-    limit: 5,
+    limit: limit,
     filters: { difficulty: difficulty, status: "NOT_STARTED" },
   },
 });
