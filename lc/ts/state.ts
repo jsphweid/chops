@@ -11,6 +11,7 @@ export namespace State {
     date: string;
     leetcodeSubmissionId: string;
     type: SubmissionType;
+    failureReason?: string;
   }
 
   interface SolutionDetails {

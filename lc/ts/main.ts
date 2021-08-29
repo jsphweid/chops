@@ -72,19 +72,24 @@ const commands = {
       questionId: solutionDetails.leetcodeId,
       language: solutionDetails.language,
     });
-
-    State.registerSubmission(filepath, {
-      date: new Date().toISOString(),
-      leetcodeSubmissionId: result.submissionId,
-      type: Submission.isAccepted(result)
-        ? State.SubmissionType.SuccessfulSubmission
-        : State.SubmissionType.FailedSubmission,
-    });
-    const text = Submission.isAccepted(result)
-      ? "Submission Succeeded!!!"
-      : "Submission failed...";
-    const submissionLink = `https://leetcode.com/submissions/detail/${result.submissionId}/`;
-    console.log(`${text} -- See more details here: ${submissionLink}`);
+    if (Submission.isAccepted(result)) {
+      State.registerSubmission(filepath, {
+        date: new Date().toISOString(),
+        leetcodeSubmissionId: result.submissionId,
+        type: State.SubmissionType.SuccessfulSubmission,
+      });
+      console.log("Submission Succeeded!!!");
+    } else {
+      const submissionLink = `https://leetcode.com/submissions/detail/${result.submissionId}/`;
+      console.log(`Submission failed... More details here: ${submissionLink}`);
+      const { why } = await ask.input({ name: "why", validate: Utils.exists });
+      State.registerSubmission(filepath, {
+        failureReason: why,
+        date: new Date().toISOString(),
+        leetcodeSubmissionId: result.submissionId,
+        type: State.SubmissionType.FailedSubmission,
+      });
+    }
   },
   report: (args: string[]) => {
     console.log(
