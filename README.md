@@ -1,4 +1,5 @@
 # chops
+Building things from scratch / leetcode / etc.
 
 ## python stuff
 run tests with
