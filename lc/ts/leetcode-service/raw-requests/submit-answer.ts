@@ -30,4 +30,8 @@ export const submitAnswer = (
         },
       }
     )
-    .then((response) => response.data);
+    .then((response) => response.data)
+    .catch((response) => {
+      console.log("error response", response);
+      return;
+    });
