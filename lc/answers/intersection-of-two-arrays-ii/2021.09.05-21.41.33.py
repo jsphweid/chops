@@ -11,6 +11,10 @@ seems to work
 
 dict1 = {4: 1, 9: 1, 5: 1}
 dict2 = {9: 2, 4: 2, 8: 1}
+
+ideas for improvements
+some things should be sets, not lists -- if they become big, list will be
+too much to search for with `x in y` type expressions...
 """
 
 from collections import defaultdict
