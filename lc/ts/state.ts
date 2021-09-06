@@ -115,14 +115,16 @@ export namespace State {
 
     // average the first success for all the first solves together...
     return (
-      Object.values(firstSolveMap).reduce((previous, current) => {
-        const firstSuccessDateStr = current.successfulSubmissions[0].date;
-        const firstSuccess = firstSuccessDateStr
-          ? new Date(firstSuccessDateStr)
-          : new Date();
-        const start = new Date(current.timeStarted);
-        return previous + (firstSuccess.getTime() - start.getTime()) / 1000;
-      }, 0) / Object.keys(firstSolveMap).length
+      Object.values(firstSolveMap)
+        .filter((solutionDetails) => solutionDetails.successfulSubmissions[0])
+        .reduce((previous, current) => {
+          const firstSuccessDateStr = current.successfulSubmissions[0].date;
+          const firstSuccess = firstSuccessDateStr
+            ? new Date(firstSuccessDateStr)
+            : new Date();
+          const start = new Date(current.timeStarted);
+          return previous + (firstSuccess.getTime() - start.getTime()) / 1000;
+        }, 0) / Object.keys(firstSolveMap).length
     );
   };
 }
