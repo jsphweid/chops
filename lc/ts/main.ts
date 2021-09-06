@@ -26,7 +26,7 @@ const commands = {
     const language = Language.fromCliArgs(args) || Language.PYTHON;
     const difficulty = Difficulty.fromCliArgs(args) || Difficulty.Type.Easy;
     const questions = await LeetcodeService.getSuggestedQuestions(difficulty);
-    questions.filter((q) => !q.isPaidOnly).forEach(printFormattedQuestion);
+    questions.forEach(printFormattedQuestion);
     const { slug } = await ask.input({ name: "slug", validate: Utils.exists });
     const question = await LeetcodeService.getQuestionBySlug(slug as string);
     if (!question) {
