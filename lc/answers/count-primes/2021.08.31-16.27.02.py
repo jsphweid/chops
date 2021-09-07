@@ -18,35 +18,67 @@ is prime by trial division.
 We only care about it up to the sqrt. But we do care about the sqrt.
 
 above 2, only odd numbers are prime
+
+count = 0
+[3, 5, 7, 9]
+count = 1
+[5, 7]
+count = 2
+[7]
+count = 3
+[]
+count = 4
+
+aaron's
+[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 30]
+count = 0
+[3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29]
+count = 1
+[5, 7, 11, 13, 17, 19, 23, 25, 29]
+count = 2
+[7, 11, 13, 17, 19, 23, 29]
+count = 3
+
+aaron's solution was elegant
+```
+class Solution:
+    def countPrimes(self, n: int) -> int:
+        r = list(range(2, n))
+        count = 0
+        while len(r):
+            count += 1
+            r = [i for i in r if i % r[0] != 0]
+        return count
+```
+
+but still not fast enough
+
+read some answers... we need to use `sieve of eratosthenes` like what aaron did but in a way that loops only over numbers
+up to the ** 0.5. Also by using python list tools it should be super speedy. NOTE: I looked up a solution on this but am re-implementing it
+without directly looking at it.
+
+root = 4
+
+2, 3
+
+[0, 0, 1, 1, 1, 1, 1, 1, 1]
+
+n=3
+root =
+
+[1, 1]
+
 """
-
-def num_is_prime(num: int) -> bool:
-    if num < 2:
-        return False
-    if num < 4:
-        return True
-    highest = int(num ** 0.5) + 1
-    possibilities = 0
-    for i in range(1, highest + 1):
-        if num % i == 0:
-            possibilities += 1
-        if possibilities > 1:
-            return False
-    return True
-
 
 class Solution:
     def countPrimes(self, n: int) -> int:
-        if n < 2:
+        if n < 3:
             return 0
-        answers = {2: 0, 3: 1, 4: 2, 5: 2, 6: 3, 7: 3, 8: 4}
-        if n in answers:
-            return answers[n]
-
-        num_primes = 4
-        for i in range(9, n, 2):
-            if num_is_prime(i):
-                num_primes += 1
-        return num_primes
-
+        lst = [1] * n
+        lst[0] = 0
+        lst[1] = 0
+        for i in range(2, int(n ** 0.5) + 1):
+            if lst[i]:
+                lst[i*i:n:i] = [0] * len(lst[i*i:n:i])
+        return sum(lst)
 
