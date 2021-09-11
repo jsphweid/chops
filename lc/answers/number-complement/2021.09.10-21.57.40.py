@@ -7,6 +7,8 @@ We could just know it's the number 7... or 2**3 - 1. Honestly that's probably th
 could also get 1000 (since that's easy with 1 << 4) then subtract 1 from it... I think (1 << 4) - 1
 takes few instructions if I had to guess though (not 100% on that). But since that's what the answer
 proposed, I'm going to go with my solution.
+
+NOTE: reading more solutions, you can just subtract num from the mask... Nice
 """
 
 import math
