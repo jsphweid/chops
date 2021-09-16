@@ -1,6 +1,9 @@
 """
 A naive implementation could just sum up every item in the window and divide by k
 over and over again. That'll do for a first pass.
+
+So that solution didn't complete in time, almost went to happy hour but decided to finish it
+using a more proper method.
 """
 
 class Solution:
