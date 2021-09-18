@@ -22,5 +22,5 @@ class Solution:
         nums_involved = [num for num, count in counts.items() if count == degree]
 
         # 2. find first and last index of each of those num(s)
-        # 3. get the difference of each and return the smallest
+        # 3. get the difference of each and return the smallest + 1 (+1 to convert to len)
         return min(map(lambda n: positions[n][-1] - positions[n][0], nums_involved)) + 1
