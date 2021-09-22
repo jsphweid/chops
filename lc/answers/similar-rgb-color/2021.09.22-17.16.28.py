@@ -58,6 +58,13 @@ Use a math-based function to round the nums appropriately.
 ~~Complexity Analysis
 Time - O(1)
 Space - O(1)
+
+REFLECTION:
+I failed once because of the bogus +1. I eliminated it and it worked. Not sure why I thought it
+should go there but it was my downfall... 
+Upon further reflection, I realize I put it there because the midpoint was always a little off.
+But when I actually counted the nums between the midpoint and the end, it turned out to be a bit
+different than I expected.
 """
 
 class Solution:
