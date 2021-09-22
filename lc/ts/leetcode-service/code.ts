@@ -1,8 +1,7 @@
 import { Language } from "../language.ts";
 
 const enhancePythonStartingCode = (code: string) => {
-  return `
-"""
+  return `"""
 ===== Initial Thoughts =====
 
 
