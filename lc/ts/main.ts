@@ -12,6 +12,7 @@ import { Difficulty } from "./difficulty.ts";
 import { SuggestedQuestion, Submission } from "./leetcode-service/types.ts";
 import { Utils } from "./utils.ts";
 import { Editor } from "./editor.ts";
+import { enhanceStartingCode } from "./leetcode-service/code.ts";
 
 const ask = new Ask();
 
@@ -37,7 +38,7 @@ const commands = {
     FS.ensureDirSync(baseDir);
     const startingCode = getQuestionStartingCode(question, language);
     const relativePath = `${baseDir}/${Utils.newFilename(language)}`;
-    Deno.writeTextFileSync(relativePath, startingCode);
+    Deno.writeTextFileSync(relativePath, enhanceStartingCode(startingCode));
     const absolutePath = Path.resolve(relativePath);
     Utils.clearConsole();
     await Utils.printHTML(question.content);
