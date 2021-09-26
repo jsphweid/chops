@@ -1,4 +1,5 @@
 import { Language } from "./language.ts";
+import { Utils } from "./utils.ts";
 
 export namespace State {
   export enum SubmissionType {
@@ -21,6 +22,13 @@ export namespace State {
     timeStarted: string;
     successfulSubmissions: Submission[];
     failedSubmissions: Submission[];
+  }
+
+  export interface Redo {
+    slug: string;
+    representation: string;
+    daysSinceLast: number;
+    step: number;
   }
 
   interface Type {
@@ -126,5 +134,99 @@ export namespace State {
           return previous + (firstSuccess.getTime() - start.getTime()) / 1000;
         }, 0) / Object.keys(firstSolveMap).length
     );
+  };
+
+  export const getUnsolvedProblems = () =>
+    Object.entries(loadState().solutions)
+      .filter(([_, value]) => !value.successfulSubmissions)
+      .map(
+        ([key, value]) =>
+          `${value.timeStarted} - ${value.leetcodeSlug} - ${key}`
+      );
+
+  const getNextDate = (dates: Date[]) => {
+    // get's next date based on a schedule
+    // reduces datetime -> date based on local day
+    const order = [0, 1, 3, 7, 14, 30];
+
+    const format = (date: Date) =>
+      // ensures reduced date is in local timezone
+      Utils.formatDate(new Date(date.toLocaleString().split(" ")[0]));
+
+    const datesGrouped: Record<string, Date[]> = {};
+    const datesSorted = dates.sort();
+    datesSorted.forEach((date) => {
+      const stringDate = format(date);
+      if (datesGrouped[stringDate]) {
+        datesGrouped[stringDate].push(date);
+      } else {
+        datesGrouped[stringDate] = [date];
+      }
+    });
+
+    const nextPosition = Object.keys(datesGrouped).length;
+    const nextIndex = Math.min(nextPosition, order.length - 1);
+    const nextSpan = order[nextIndex];
+
+    const representation = [...order] as Array<string | number>;
+    representation[nextIndex] = `[${order[nextIndex]}]`;
+    return {
+      step: nextIndex,
+      representation: JSON.stringify(representation),
+      nextDate: Utils.addDays(datesSorted[dates.length - 1], nextSpan),
+    };
+  };
+
+  const getSolvedProblems = () => {
+    const groupedBySlug: Record<string, Date[]> = {};
+    Object.entries(loadState().solutions).forEach(([key, value]) => {
+      const slug = key.split("/")[1];
+      if (value.successfulSubmissions.length) {
+        const date = new Date(value.successfulSubmissions[0].date);
+        if (groupedBySlug[slug]) {
+          groupedBySlug[slug].push(date);
+        } else {
+          groupedBySlug[slug] = [date];
+        }
+      }
+    });
+    return groupedBySlug;
+  };
+
+  const prioritizeRedos = (redos: Array<Redo>): Array<Redo> =>
+    // prioritize lower steps
+    // if on same step, priorize for bigger daysSinceLast
+    redos.sort((a, b) => {
+      if (a.step > b.step) {
+        return 1;
+      } else if (b.step < a.step) {
+        return -1;
+      } else {
+        if (a.daysSinceLast > b.daysSinceLast) {
+          return -1;
+        } else if (b.daysSinceLast > a.daysSinceLast) {
+          return 1;
+        } else {
+          return 0;
+        }
+      }
+    });
+
+  export const getRedos = (): Array<Redo> => {
+    const state = loadState();
+    const redos: Array<Redo> = [];
+    const now = new Date();
+    for (const [slug, dates] of Object.entries(getSolvedProblems())) {
+      const { representation, nextDate, step } = getNextDate(dates);
+      if (nextDate < now) {
+        redos.push({
+          slug,
+          step,
+          representation,
+          daysSinceLast: Utils.getDiffDays(nextDate, now),
+        });
+      }
+    }
+    return prioritizeRedos(redos);
   };
 }

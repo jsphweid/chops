@@ -80,4 +80,27 @@ export namespace Utils {
     let keys = Object.keys(myEnum).filter((x) => myEnum[x] == enumValue);
     return keys.length > 0 ? keys[0] : null;
   };
+
+  export const formatDate = (date: Date): string => {
+    const year = date.getFullYear();
+
+    let month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : "0" + month;
+
+    let day = date.getDate().toString();
+    day = day.length > 1 ? day : "0" + day;
+
+    return year + "-" + month + "-" + day;
+  };
+
+  export const addDays = (date: Date, daysToAdd: number): Date => {
+    const newDate = new Date(date.valueOf());
+    newDate.setDate(newDate.getDate() + daysToAdd);
+    return newDate;
+  };
+
+  export const getDiffDays = (date1: Date, date2: Date) => {
+    const diffTime = Math.abs(date2.getTime() - date1.getTime());
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  };
 }

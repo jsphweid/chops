@@ -16,18 +16,38 @@ import { enhanceStartingCode } from "./leetcode-service/code.ts";
 
 const ask = new Ask();
 
-const printFormattedQuestion = (question: SuggestedQuestion.Type): void => {
-  const link = `https://leetcode.com/problems/${question.titleSlug}/`;
-  const comps = [question.titleSlug, question.title, link, question.difficulty];
-  console.log(comps.join(" - "));
+const printFormattedQuestions = (questions: SuggestedQuestion.Type[]): void => {
+  console.log("New Questions");
+  for (const question of questions) {
+    const link = `https://leetcode.com/problems/${question.titleSlug}/`;
+    const comps = [
+      question.titleSlug,
+      question.title,
+      link,
+      question.difficulty,
+    ];
+    console.log(comps.join(" - "));
+  }
+  console.log("");
+};
+
+const printRedos = (redos: State.Redo[]): void => {
+  console.log("Redos");
+  redos.forEach((redo) => {
+    console.log(
+      `${redo.slug} - ${redo.representation} - ${redo.daysSinceLast} day(s) since last`
+    );
+  });
+  console.log("");
 };
 
 const commands = {
   new: async (args: string[]) => {
     const language = Language.fromCliArgs(args) || Language.PYTHON;
-    const difficulty = Difficulty.fromCliArgs(args) || Difficulty.Type.Easy;
+    const difficulty = Difficulty.fromCliArgs(args) || Difficulty.choose();
     const questions = await LeetcodeService.getSuggestedQuestions(difficulty);
-    questions.forEach(printFormattedQuestion);
+    printRedos(State.getRedos().slice(0, 5));
+    printFormattedQuestions(questions);
     const { slug } = await ask.input({ name: "slug", validate: Utils.exists });
     const question = await LeetcodeService.getQuestionBySlug(slug as string);
     if (!question) {
@@ -97,6 +117,7 @@ const commands = {
       "Minutes to first solve (avg):",
       State.getAverageSecondsToFirstSolve() / 60
     );
+    console.log("Unsolved problems:", State.getUnsolvedProblems());
   },
 };
 

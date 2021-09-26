@@ -33,6 +33,9 @@ export namespace Difficulty {
       strings
     );
 
+  export const choose = (): Type =>
+    Math.random() > 0.33 ? Type.Easy : Type.Medium;
+
   export const toLeetcodeName: (difficulty: Type) => RawRequests.Difficulty =
     when({
       easy: () => "EASY",
