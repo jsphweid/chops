@@ -154,7 +154,7 @@ export namespace State {
       Utils.formatDate(new Date(date.toLocaleString().split(" ")[0]));
 
     const datesGrouped: Record<string, Date[]> = {};
-    const datesSorted = dates.sort();
+    const datesSorted = dates.sort((a, b) => a.getTime() - b.getTime());
     datesSorted.forEach((date) => {
       const stringDate = format(date);
       if (datesGrouped[stringDate]) {
@@ -213,7 +213,6 @@ export namespace State {
     });
 
   export const getRedos = (): Array<Redo> => {
-    const state = loadState();
     const redos: Array<Redo> = [];
     const now = new Date();
     for (const [slug, dates] of Object.entries(getSolvedProblems())) {
