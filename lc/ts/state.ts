@@ -225,9 +225,6 @@ export namespace State {
         });
       }
     }
-    for (const redo of prioritizeRedos(redos)) {
-      console.log("redo", redo.step, redo.daysSinceLast);
-    }
     return prioritizeRedos(redos);
   };
 }
