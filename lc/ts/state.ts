@@ -199,7 +199,7 @@ export namespace State {
     redos.sort((a, b) => {
       if (a.step > b.step) {
         return 1;
-      } else if (b.step < a.step) {
+      } else if (b.step > a.step) {
         return -1;
       } else {
         if (a.daysSinceLast > b.daysSinceLast) {
@@ -211,7 +211,6 @@ export namespace State {
         }
       }
     });
-
   export const getRedos = (): Array<Redo> => {
     const redos: Array<Redo> = [];
     const now = new Date();
@@ -225,6 +224,9 @@ export namespace State {
           daysSinceLast: Utils.getDiffDays(nextDate, now),
         });
       }
+    }
+    for (const redo of prioritizeRedos(redos)) {
+      console.log("redo", redo.step, redo.daysSinceLast);
     }
     return prioritizeRedos(redos);
   };
