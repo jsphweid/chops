@@ -67,3 +67,25 @@ export const getSuggestedQuestionsQuery = (
     filters: { difficulty: difficulty, status: "NOT_STARTED" },
   },
 });
+
+export const getTopDiscussionTitlesQuery = (questionId: string) => ({
+  query: `
+    query questionTopicsList($questionId: String!, $orderBy: TopicSortingOption, $skip: Int, $query: String, $first: Int!, $tags: [String!]) {
+      questionTopicsList(questionId: $questionId, orderBy: $orderBy, skip: $skip, query: $query, first: $first, tags: $tags) {
+        edges {
+          node {
+            title
+          }
+        }
+      }
+    }
+  `,
+  variables: {
+    orderBy: "most_votes",
+    query: "",
+    skip: 0,
+    first: 15,
+    tags: [],
+    questionId,
+  },
+});
