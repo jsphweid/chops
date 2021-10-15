@@ -130,7 +130,6 @@ class Solution:
         biggest_streak = 0
         distance = 0
         streak = 0
-        last_one = -1
         first = None
         for i, seat in enumerate(seats):
             if seat == 0:
@@ -140,7 +139,6 @@ class Solution:
                 if streak > biggest_streak:
                     biggest_streak = streak
                     distance = math.ceil(streak / 2)
-                    last_one = i
                 streak = 0
         return max(first, streak, distance)
                 
