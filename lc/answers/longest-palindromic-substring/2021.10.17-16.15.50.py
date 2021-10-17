@@ -8,7 +8,7 @@ class Solution:
         record = s[0]
         for i in range(1, len(s)):
             if s[i] == s[i - 1]:
-                longest = _find_longest(i - 1, i)
+                longest = _find_longest(i -, i)
                 if len(longest) > len(record):
                     record = longest
             longest = _find_longest(i, i)
