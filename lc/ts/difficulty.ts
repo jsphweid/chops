@@ -42,4 +42,13 @@ export namespace Difficulty {
       medium: () => "MEDIUM",
       hard: () => "HARD",
     });
+
+  export const fromIndex = (index: 0 | 1 | 2): Type =>
+    [Type.Easy, Type.Medium, Type.Hard][index];
+
+  export const pprint: (difficulty: Type) => string = when({
+    easy: () => "Easy",
+    medium: () => "Medium",
+    hard: () => "Hard",
+  });
 }

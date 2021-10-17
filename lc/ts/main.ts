@@ -34,8 +34,9 @@ const printFormattedQuestions = (questions: SuggestedQuestion.Type[]): void => {
 const printRedos = (redos: State.Redo[]): void => {
   console.log("Redos");
   redos.forEach((redo) => {
+    const difficulty = Difficulty.pprint(Difficulty.fromIndex(redo.difficulty));
     console.log(
-      `${redo.slug} - ${redo.representation} - ${redo.daysSinceLast} day(s) since last`
+      `${redo.slug} - ${difficulty} - ${redo.representation} - ${redo.daysSinceLast} day(s) since last`
     );
   });
   console.log("");

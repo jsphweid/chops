@@ -4,6 +4,7 @@ export const getQuestionQuery = (slug: string) => ({
   query: `
     query questionData($titleSlug: String!) {
       question(titleSlug: $titleSlug) {
+        difficulty
         questionId
         title
         titleSlug

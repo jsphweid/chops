@@ -2,6 +2,7 @@ import { client } from "./client.ts";
 import { getQuestionQuery } from "./queries.ts";
 
 export interface Question {
+  difficulty: "Easy" | "Medium" | "Hard";
   questionId: string;
   title: string;
   titleSlug: string;

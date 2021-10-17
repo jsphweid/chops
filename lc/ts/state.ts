@@ -15,6 +15,12 @@ export namespace State {
     failureReason?: string;
   }
 
+  interface Problem {
+    id: string;
+    slug: string;
+    difficulty: 0 | 1 | 2; // 0-easy, 1-medium, 2-hard
+  }
+
   interface SolutionDetails {
     leetcodeId: string;
     leetcodeSlug: string;
@@ -29,16 +35,21 @@ export namespace State {
     representation: string;
     daysSinceLast: number;
     step: number;
+    difficulty: 0 | 1 | 2;
   }
 
   interface Type {
     solutions: {
       [filepath: string]: SolutionDetails;
     };
+    problems: {
+      [slug: string]: Problem;
+    };
   }
 
   const emptyState: Type = {
     solutions: {},
+    problems: {},
   };
 
   const relativePath = "state.json";
@@ -54,6 +65,19 @@ export namespace State {
   const writeState = (state: Type): void => {
     Deno.writeTextFileSync(relativePath, JSON.stringify(state));
   };
+
+  export const upsertProblem = (problem: Problem) => {
+    const state = loadState();
+    const previousProblem = state.problems[problem.slug] || {};
+    state.problems[problem.slug] = { ...previousProblem, ...problem };
+    writeState(state);
+  };
+
+  export const getUniqueSolutionSlugs = (): Set<string> =>
+    new Set(Object.values(loadState().solutions).map((s) => s.leetcodeSlug));
+
+  export const getUniqueProblemSlugs = (): Set<string> =>
+    new Set(Object.keys(loadState().problems));
 
   export const startNewSolution = (
     leetcodeId: string,
@@ -197,21 +221,29 @@ export namespace State {
     // prioritize lower steps
     // if on same step, priorize for bigger daysSinceLast
     redos.sort((a, b) => {
-      if (a.step > b.step) {
+      if (a.difficulty < b.difficulty) {
         return 1;
-      } else if (b.step > a.step) {
+      } else if (b.difficulty < a.difficulty) {
         return -1;
       } else {
-        if (a.daysSinceLast > b.daysSinceLast) {
-          return -1;
-        } else if (b.daysSinceLast > a.daysSinceLast) {
+        if (a.step > b.step) {
           return 1;
+        } else if (b.step > a.step) {
+          return -1;
         } else {
-          return 0;
+          if (a.daysSinceLast > b.daysSinceLast) {
+            return -1;
+          } else if (b.daysSinceLast > a.daysSinceLast) {
+            return 1;
+          } else {
+            return 0;
+          }
         }
       }
     });
+
   export const getRedos = (): Array<Redo> => {
+    const state = loadState();
     const redos: Array<Redo> = [];
     const now = new Date();
     for (const [slug, dates] of Object.entries(getSolvedProblems())) {
@@ -222,6 +254,7 @@ export namespace State {
           step,
           representation,
           daysSinceLast: Utils.getDiffDays(nextDate, now),
+          difficulty: state.problems[slug].difficulty,
         });
       }
     }
