@@ -1,11 +1,11 @@
 import { client } from "./client.ts";
 import { getTopDiscussionTitlesQuery } from "./queries.ts";
 
-export const getTopDiscussionTitles = (questionId: string): Promise<string[]> =>
+export const getTopDiscussionTitles = (problemId: string): Promise<string[]> =>
   client
-    .post("/graphql", getTopDiscussionTitlesQuery(questionId))
+    .post("/graphql", getTopDiscussionTitlesQuery(problemId))
     .then((response) =>
-      response.data.data.questionTopicsList.edges.map((e: any) => e.node.title)
+      response.data.data.problemTopicsList.edges.map((e: any) => e.node.title)
     )
     .catch(console.error);
 

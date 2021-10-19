@@ -1,16 +1,16 @@
 import { Utils } from "../utils.ts";
-import { Submission, Question, SuggestedQuestion } from "./types.ts";
+import { Submission, Problem, SuggestedProblem } from "./types.ts";
 import * as RawRequests from "./raw-requests/index.ts";
 import { SubmitAnswerRequest } from "./raw-requests/submit-answer.ts";
 import { Difficulty } from "../difficulty.ts";
 import { Language } from "../language.ts";
 
-export const getQuestionStartingCode = (
-  question: Question.Type,
+export const getProblemStartingCode = (
+  problem: Problem.Type,
   language: Language.Type
 ): string => {
   const langSlug = Language.toLeetcodeSlugName(language);
-  const found = question.codeSnippets.find((s) => s.langSlug === langSlug);
+  const found = problem.codeSnippets.find((s) => s.langSlug === langSlug);
   if (!found) {
     return "Haven't fully implemented language " + langSlug;
   }
@@ -18,9 +18,9 @@ export const getQuestionStartingCode = (
 };
 
 export namespace LeetcodeService {
-  export const getQuestionBySlug = (
+  export const getProblemBySlug = (
     slug: string
-  ): Promise<Question.Type | null> => RawRequests.getQuestionBySlug(slug);
+  ): Promise<Problem.Type | null> => RawRequests.getProblemBySlug(slug);
 
   const waitForSubmission = (
     submissionId: number | string
@@ -45,8 +45,8 @@ export namespace LeetcodeService {
       waitForSubmission(data.submission_id)
     );
 
-  export const getSuggestedQuestions = (
+  export const getSuggestedProblems = (
     difficulty: Difficulty.Type
-  ): Promise<SuggestedQuestion.Type[]> =>
-    RawRequests.getSuggestedQuestions(Difficulty.toLeetcodeName(difficulty));
+  ): Promise<SuggestedProblem.Type[]> =>
+    RawRequests.getSuggestedProblems(Difficulty.toLeetcodeName(difficulty));
 }

@@ -43,8 +43,21 @@ export namespace Difficulty {
       hard: () => "HARD",
     });
 
+  export const fromString = (str: string): Type =>
+    str.toUpperCase() === "EASY"
+      ? Type.Easy
+      : str.toUpperCase() === "MEDIUM"
+      ? Type.Medium
+      : Type.Hard;
+
   export const fromIndex = (index: 0 | 1 | 2): Type =>
     [Type.Easy, Type.Medium, Type.Hard][index];
+
+  export const toIndex: (difficulty: Type) => 0 | 1 | 2 = when({
+    easy: () => 0,
+    medium: () => 1,
+    hard: () => 2,
+  });
 
   export const pprint: (difficulty: Type) => string = when({
     easy: () => "Easy",

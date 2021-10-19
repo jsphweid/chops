@@ -1,7 +1,7 @@
 import { client } from "./client.ts";
-import { getQuestionQuery } from "./queries.ts";
+import { getProblemQuery } from "./queries.ts";
 
-export interface Question {
+export interface Problem {
   difficulty: "Easy" | "Medium" | "Hard";
   questionId: string;
   title: string;
@@ -18,8 +18,8 @@ export interface Question {
   envInfo: string;
 }
 
-interface GetQuestionBySlugResponse {
-  question: Question;
+interface GetProblemBySlugResponse {
+  problem: Problem;
 }
 
 interface CodeSnippetsEntity {
@@ -36,8 +36,8 @@ interface Solution {
   paidOnlyVideo: boolean;
 }
 
-export const getQuestionBySlug = (slug: string): Promise<Question | null> =>
+export const getProblemBySlug = (slug: string): Promise<Problem | null> =>
   client
-    .post("/graphql", getQuestionQuery(slug))
+    .post("/graphql", getProblemQuery(slug))
     .then((response) => response.data.data.question || null)
     .catch(console.log);

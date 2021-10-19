@@ -7,7 +7,7 @@ interface SubmitAnswerResponse {
 
 export interface SubmitAnswerRequest {
   slug: string;
-  questionId: string;
+  problemId: string;
   language: Language.Type;
   code: string;
 }
@@ -20,7 +20,7 @@ export const submitAnswer = (
       `problems/${request.slug}/submit/`,
       {
         lang: Language.toLeetcodeSlugName(request.language),
-        question_id: request.questionId,
+        problem_id: request.problemId,
         typed_code: request.code,
       },
       {

@@ -1,5 +1,5 @@
-import { Question as RawRequestQuestion } from "./raw-requests/get-question-by-slug.ts";
-import { SuggestedQuestion } from "./raw-requests/get-suggested-questions.ts";
+import { Problem as RawRequestProblem } from "./raw-requests/get-problem-by-slug.ts";
+import { SuggestedProblem } from "./raw-requests/get-suggested-problems.ts";
 import * as RawRequestSubmission from "./raw-requests/check-submission.ts";
 
 export interface ParsedUserFile {
@@ -7,12 +7,12 @@ export interface ParsedUserFile {
   sessionId: string;
 }
 
-export namespace Question {
-  export type Type = RawRequestQuestion;
+export namespace Problem {
+  export type Type = RawRequestProblem;
 }
 
-export namespace SuggestedQuestion {
-  export type Type = SuggestedQuestion;
+export namespace SuggestedProblem {
+  export type Type = SuggestedProblem;
 }
 
 export namespace Submission {

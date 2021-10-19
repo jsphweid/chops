@@ -1,8 +1,8 @@
-import { Difficulty } from "./get-suggested-questions.ts";
+import { Difficulty } from "./get-suggested-problems.ts";
 
-export const getQuestionQuery = (slug: string) => ({
+export const getProblemQuery = (slug: string) => ({
   query: `
-    query questionData($titleSlug: String!) {
+    query problemData($titleSlug: String!) {
       question(titleSlug: $titleSlug) {
         difficulty
         questionId
@@ -34,25 +34,25 @@ export const getQuestionQuery = (slug: string) => ({
   variables: { titleSlug: slug },
 });
 
-export const getSuggestedQuestionsQuery = (
+export const getSuggestedProblemsQuery = (
   difficulty: Difficulty,
   limit: number
 ) => ({
   query: `
-    query problemsetQuestionList(
+    query problemsetProblemList(
       $categorySlug: String
       $limit: Int
       $skip: Int
       $filters: QuestionListFilterInput
     ) {
-      problemsetQuestionList: questionList(
+      problemsetProblemList: questionList(
         categorySlug: $categorySlug
         limit: $limit
         skip: $skip
         filters: $filters
       ) {
         total: totalNum
-        questions: data {
+        problems: data {
           title
           titleSlug
           difficulty
@@ -69,10 +69,10 @@ export const getSuggestedQuestionsQuery = (
   },
 });
 
-export const getTopDiscussionTitlesQuery = (questionId: string) => ({
+export const getTopDiscussionTitlesQuery = (problemId: string) => ({
   query: `
-    query questionTopicsList($questionId: String!, $orderBy: TopicSortingOption, $skip: Int, $query: String, $first: Int!, $tags: [String!]) {
-      questionTopicsList(questionId: $questionId, orderBy: $orderBy, skip: $skip, query: $query, first: $first, tags: $tags) {
+    query problemTopicsList($problemId: String!, $orderBy: TopicSortingOption, $skip: Int, $query: String, $first: Int!, $tags: [String!]) {
+      problemTopicsList(problemId: $problemId, orderBy: $orderBy, skip: $skip, query: $query, first: $first, tags: $tags) {
         edges {
           node {
             title
@@ -87,6 +87,6 @@ export const getTopDiscussionTitlesQuery = (questionId: string) => ({
     skip: 0,
     first: 15,
     tags: [],
-    questionId,
+    problemId,
   },
 });
