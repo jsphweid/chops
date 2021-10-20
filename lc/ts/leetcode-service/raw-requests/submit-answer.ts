@@ -20,7 +20,7 @@ export const submitAnswer = (
       `problems/${request.slug}/submit/`,
       {
         lang: Language.toLeetcodeSlugName(request.language),
-        problem_id: request.problemId,
+        question_id: request.problemId,
         typed_code: request.code,
       },
       {
