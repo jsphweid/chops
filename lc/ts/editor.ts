@@ -7,5 +7,5 @@ export namespace Editor {
     Utils.runCommand(["open", "-a", "TextEdit", file]);
 
   export const openInRandomTextEditor = (file: string): Promise<void> =>
-    Math.random() < 0.8 ? openInSublime(file) : openInTextEdit(file);
+    Math.random() < 0.96 ? openInSublime(file) : openInTextEdit(file);
 }
