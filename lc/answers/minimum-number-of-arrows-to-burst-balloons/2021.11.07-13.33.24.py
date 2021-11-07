@@ -46,15 +46,18 @@ def findMinArrowShots(points):
         while len(points) and points[0][0] <= left_point_end_x <= points[0][1]:
             points.pop(0)
     return count
+
+after looking at the answers... let's do it without .pop()'ing
+[[1,2],[3,4],[5,6],[7,8]]
 """
 
 class Solution:
     def findMinArrowShots(self,points: List[List[int]]) -> int:
         points.sort(key=lambda x: x[1])
         count = 0
-        while len(points):
-            left_point_end_x = points.pop(0)[1]
-            count += 1
-            while len(points) and points[0][0] <= left_point_end_x <= points[0][1]:
-                points.pop(0)
+        last_arrow = float("inf") * -1
+        for point in points:
+            if point[0] > last_arrow:
+                count += 1
+                last_arrow = point[1]
         return count
