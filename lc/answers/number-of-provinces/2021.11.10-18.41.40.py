@@ -16,10 +16,9 @@ class Solution:
         count = 0
 
         def explore(city: int):
-            if seen[city]: return
             seen[city] = 1
             for i, is_connected in enumerate(isConnected[city]):
-                if i != city and is_connected:
+                if i != city and is_connected and not seen[i]:
                     explore(i)
 
         for i in range(len(isConnected)):
