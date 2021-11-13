@@ -22,6 +22,5 @@ class Solution:
                 return
             for i in range(len(cand)):
                 recurse(cand[i:], lst + [cand[i]], x + cand[i])
-        for i in range(len(candidates)):
-            recurse(candidates[i:], [candidates[i]], candidates[i])
+        recurse(candidates, [], 0)
         return res
