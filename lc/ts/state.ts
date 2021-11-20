@@ -45,11 +45,13 @@ export namespace State {
     problems: {
       [slug: string]: Problem;
     };
+    ignore: string[];
   }
 
   const emptyState: Type = {
     solutions: {},
     problems: {},
+    ignore: [],
   };
 
   const relativePath = "state.json";
@@ -160,6 +162,24 @@ export namespace State {
     );
   };
 
+  export const addToIgnore = (slug: string) => {
+    const ignored = getIgnoredProblems();
+    if (!ignored.has(slug)) {
+      const state = loadState();
+      if (!state.ignore) {
+        state.ignore = [];
+      }
+      state.ignore.push(slug);
+      writeState(state);
+    }
+  };
+
+  export const getIgnoredProblems = (): Set<string> => {
+    const state = loadState();
+    if (!state.ignore) return new Set();
+    return new Set(state.ignore);
+  };
+
   export const getUnsolvedProblems = () =>
     Object.entries(loadState().solutions)
       .filter(([_, value]) => !value.successfulSubmissions)
@@ -244,11 +264,12 @@ export namespace State {
 
   export const getRedos = (): Array<Redo> => {
     const state = loadState();
+    const ignored = getIgnoredProblems();
     const redos: Array<Redo> = [];
     const now = new Date();
     for (const [slug, dates] of Object.entries(getSolvedProblems())) {
       const { representation, nextDate, step } = getNextDate(dates);
-      if (nextDate < now) {
+      if (!ignored.has(slug) && nextDate < now) {
         redos.push({
           slug,
           step,

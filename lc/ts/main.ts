@@ -43,8 +43,9 @@ const commands = {
       const language = Language.fromCliArgs(args) || Language.PYTHON;
       const difficulty = Difficulty.fromCliArgs(args) || Difficulty.choose();
       const problems = await LeetcodeService.getSuggestedProblems(difficulty);
+      const ignored = State.getIgnoredProblems();
       printRedos(State.getRedos().slice(0, 5));
-      printFormattedProblems(problems);
+      printFormattedProblems(problems.filter((p) => !ignored.has(p.titleSlug)));
       const { slug } = await ask.input({
         name: "slug",
         validate: Utils.exists,
@@ -85,6 +86,14 @@ const commands = {
     } catch (e) {
       console.log("------e", e.response.data);
     }
+  },
+  ignore: (args: string[]) => {
+    if (args.length !== 1) {
+      throw new Error("Too many args for `ignore`");
+    }
+    const slug = args[0];
+    State.addToIgnore(slug);
+    console.info(`Added "${slug}" to the ignore list.`);
   },
   submit: async (args: string[]) => {
     if (args.length !== 1) {
