@@ -33,15 +33,8 @@ Now, what might be fun is to just convert the input to this and see how it does 
 Honestly that's horrible since you can have lists like `[1,1000000000]` which makes everything take
 so long to process.
 
-=== Implemented Approach ===
-The best position minimizes the number of odds to it.
+Actually we can use a map of counts and sorta do something similar
 
-~~Complexity Analysis
-Time - 
-Space - 
-"""
-from collections import Counter
-class Solution:
     def minCostToMoveChips(self, position: List[int]) -> int:
         counts = Counter(position)
         res = inf
@@ -52,3 +45,18 @@ class Solution:
                 cost += diff * counts[num]
             res = min(res, cost)
         return res
+
+=== Implemented Approach ===
+We're trying to figure out the best position to go to, but really there are only 2 positions... even/odd.
+Let's aggregate things into simply even and odd, then find out which is the better...
+
+~~Complexity Analysis
+Time - 
+Space - 
+"""
+from collections import Counter
+class Solution:
+    def minCostToMoveChips(self, position: List[int]) -> int:
+        counts = {0: 0, 1: 0}
+        for item in position: counts[item % 2] += 1
+        return min(counts[0], counts[1])
