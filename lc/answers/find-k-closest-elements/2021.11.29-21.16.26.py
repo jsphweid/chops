@@ -77,7 +77,7 @@ class Solution:
 
             a, b = arr[l], arr[r]
             if (abs(a-x) < abs(b-x)) or ((abs(a-x) == abs(b-x)) and (a<b)):
-                res.append(arr[l])
+                res.append(arr[l] )
                 l -= 1
             else:
                 res.append(arr[r])
