@@ -177,3 +177,25 @@ print('count_ways', count_ways(100))  # prints 292
 
 # This makes intuitive sense as we know we only want to count when
 # we get to 0
+
+#-------------------------------------------------------- WEEKS LATER...
+
+# just refactoring to make it more maintainable
+
+def count_ways_final(amount: int, max_coin=50) -> int:
+	if amount == 0: return 1
+
+	count = 0
+	for coin in [50, 25, 10, 5, 1]:
+		if amount >= coin and max_coin >= coin:
+			count += count_ways(amount - coin, max_coin=coin)
+	return count
+
+print('count_ways_final', count_ways(100))  # prints 292
+
+# ok how about a dumb one-liner
+
+def fn(a: int, l=50) -> int:
+	return 1 if a == 0 else sum(fn(a - c, c) for c in [50, 25, 10, 5, 1] if a >= c and l >= c)
+
+print('one liner', fn(100))  # prints 292
