@@ -97,4 +97,4 @@ def make_longest_title2(titles):
 
 print('Output (make_longest_title2):', make_longest_title2(lots_of_titles))
 
-"A Minute to Pray, A Second to Die Another Day for Night of the Living Dead Man on Fire in the Sky"
+# "A Minute to Pray, A Second to Die Another Day for Night of the Living Dead Man on Fire in the Sky"
