@@ -28,7 +28,7 @@ class Solution:
                     results[3 + i] += 1
                     if i == j:
                         results[6] += 1
-                    if (i == 0 and j == 2) or (i == 2 and j == 0) or (i == 1 and j == 1):
+                    if i + j == 2:
                         results[7] += 1
         if num_o > num_x or num_x - num_o > 1:
             return False
