@@ -1,0 +1,15 @@
+class Solution:
+    def uniquePathsWithObstacles(self, obstacleGrid, i=0, j=0, memo=dict()):
+        M, N = len(obstacleGrid), len(obstacleGrid[0])
+        key = (i, j)
+        if key in memo: return memo[key]
+        if 0 <= i < M and 0 <= j < N and obstacleGrid[i][j] == 0:
+            if i == M - 1 and j == N - 1:
+                return 1
+            else:
+                down = self.uniquePathsWithObstacles(obstacleGrid, i + 1, j, memo)
+                right = self.uniquePathsWithObstacles(obstacleGrid, i, j + 1, memo)
+                memo[key] = down + right
+                return memo[key]
+        else:
+            return 0
