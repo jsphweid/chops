@@ -13,22 +13,22 @@
 i=6 insert_i=5
 
 failed because apparently they do want you to cut off the last items in python... that's stupid
+
+oh actually I misread... we're supposed to return the number of non-dupes
 """
 
 class Solution:
     def removeDuplicates(self, nums: List[int]) -> int:
-        insert_i, dupes = 0, 0
+        insert_i = 0
         for i, curr in enumerate(nums):
             if i < 2:
                 insert_i += 1
             else:
-                if curr == nums[insert_i - 1] and curr == nums[insert_i - 2]:
-                    dupes += 1
-                else:
+                num_at_capacity = curr == nums[insert_i - 1] and curr == nums[insert_i - 2]
+                if not num_at_capacity:
                     nums[insert_i] = curr
                     insert_i += 1
-        for _ in range(dupes):
-            nums.pop()
+        return insert_i
 
 
 
