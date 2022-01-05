@@ -18,19 +18,10 @@
 
 {6:0, 3:0, 0:1, 1:1}
 
-=== Brute Force Approach ===
-
 
 ~~Complexity Analysis
-Time - 
-Space - 
-
-=== Implemented Approach ===
-
-
-~~Complexity Analysis
-Time - 
-Space - 
+Time - O(nlogn + n)
+Space - O(n)
 
 [1,3,4,2,6,8]
 res=[1,3,4]
