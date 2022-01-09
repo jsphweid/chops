@@ -67,6 +67,23 @@ Thinking about efficiency (looks like pascal's triangle)
 6 chunks 4 people => 10
 6 chunks 1 person => 1
 
+it times out
+
+Thinking about this again a few weeks later...
+[2,3,4,3,2,1,5,7,3,4] k=5 (6) 10 elements, max group size is 5
+[14,13,15,18,18,20]
+sliding window may help locate where the min would be
+[[2,3][4][3,2][1,5][7][3,4]]
+
+[1,2,3,4,5,6,7,8,9] k=5, 6 groups 9 elements. therefore the absolute
+biggest any group can be is 4 elements. And the smallest 4 element
+sliding window is around [1,2,3,4]. The answer is ultimately [1,2,3]
+
+it's just too fuzzy to get us an actual answer but may point us
+in the right direction?
+
+
+idk how else to think about it... maybe I can just try to optimize my solution somehow
 
 ~~Complexity Analysis
 Time - 
@@ -78,17 +95,11 @@ Space -
 ~~Complexity Analysis
 Time - 
 Space - 
+
+[1,2,3,4,5,6,7,8,9]
+[1][2][3][4][5][6,7,8,9]
 """
 
-
-# {
-#     0: 9, [9],
-#     1: 8, [8],
-#     2: 9, [4,5],
-#     3: 13, [6,7],
-#     4: 1, [1],
-#     5: 5, [2,3]
-# }
 
 from collections import deque
 class Solution:
@@ -98,8 +109,7 @@ class Solution:
             deques.append(deque(sweetness[i:] if i == k else [sweetness[i]]))
         for d in deques: sums.append(sum(d))
 
-        best = 0
-        last = None
+        best, last = 0, None
         while True:
             minimum = (inf, 0)
             for index, total in enumerate(sums):
@@ -121,7 +131,5 @@ class Solution:
                 sums[index - 1] += num
                 if len(deques[index]) > 0:
                     break
-            i += 1
         return best
-                    
 
