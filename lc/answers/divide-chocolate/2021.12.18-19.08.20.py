@@ -85,21 +85,11 @@ in the right direction?
 
 idk how else to think about it... maybe I can just try to optimize my solution somehow
 
-~~Complexity Analysis
-Time - 
-Space - 
+Next day.......
+So I just realized that if I make a running sum of the numbers,
+I can make a lots of operations much more efficient
 
-=== Implemented Approach ===
-
-
-~~Complexity Analysis
-Time - 
-Space - 
-
-[1,2,3,4,5,6,7,8,9]
-[1][2][3][4][5][6,7,8,9]
-"""
-
+prev solution:
 
 from collections import deque
 class Solution:
@@ -133,3 +123,57 @@ class Solution:
                     break
         return best
 
+~~Complexity Analysis
+Time - 
+Space - 
+
+=== Implemented Approach ===
+
+
+~~Complexity Analysis
+Time - 
+Space - 
+
+[1,2,3,4,5,6,7,8,9]
+[1][2][3][4][5][6,7,8,9]
+"""
+from math import inf
+class Solution:
+    def maximizeSweetness(self, sweetness: List[int], k: int) -> int:
+        if not sweetness: return 0
+        if len(sweetness) == 1: return sweetness[0]
+        if not k: return sum(sweetness)
+
+        for i in range(1, len(sweetness)):
+            sweetness[i] += sweetness[i - 1]
+
+        state = tuple(range(k + 1))
+        res = 0
+        z = 0
+        # (0, 2, 3)
+        while True:
+            lowest = (inf, -1)
+            for i in range(k + 1):
+                end = sweetness[-1] if i == k else sweetness[state[i + 1] - 1]
+                start = 0 if i == 0 else sweetness[state[i] - 1]
+                lowest = min(lowest, (end - start, i))
+
+            res = max(res, lowest[0])
+            nxt = list(state)
+
+            for i in range(len(state) - lowest[1] - 1):
+                j = i + lowest[1] + 1
+                if i == 0 or (nxt[j] == nxt[j - 1]):
+                    nxt[j] += 1
+                else:
+                    break
+
+            if z == 5:
+                break
+            z += 1
+            nxt = tuple(nxt)
+            if state == nxt:
+                break
+            else:
+                state = nxt
+        return res
