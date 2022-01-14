@@ -124,11 +124,11 @@ class Solution:
         return best
 
 ~~Complexity Analysis
-Time - 
+Time - really bad
 Space - 
 
 === Implemented Approach ===
-
+ok, I read the back, brushed up on some binary search skills and here I am
 
 ~~Complexity Analysis
 Time - 
@@ -136,44 +136,44 @@ Space -
 
 [1,2,3,4,5,6,7,8,9]
 [1][2][3][4][5][6,7,8,9]
+
+[1,2,3,4,5,6,7,8,9], k = 5 (need 6 groups)
+max_size=10 groups=6 min=5
+max_size=9 groups=6 min=6 -> answer
+
+[5,6,7,8,9,1,2,3,4], k = 8 (need 9 groups)
+max_size=9 groups=7
+max_size=8 groups=7 (has to be able to go under)
+max_size=2 groups=9 (min is 1) -> answer
+
+[1,2,3,4,5,6,7,8,9]
+
+[5,6,7,8,9,1,2,3,4], k = 8 (need 9 groups)
 """
+
 from math import inf
 class Solution:
     def maximizeSweetness(self, sweetness: List[int], k: int) -> int:
         if not sweetness: return 0
-        if len(sweetness) == 1: return sweetness[0]
-        if not k: return sum(sweetness)
-
-        for i in range(1, len(sweetness)):
-            sweetness[i] += sweetness[i - 1]
-
-        state = tuple(range(k + 1))
-        res = 0
-        z = 0
-        # (0, 2, 3)
-        while True:
-            lowest = (inf, -1)
-            for i in range(k + 1):
-                end = sweetness[-1] if i == k else sweetness[state[i + 1] - 1]
-                start = 0 if i == 0 else sweetness[state[i] - 1]
-                lowest = min(lowest, (end - start, i))
-
-            res = max(res, lowest[0])
-            nxt = list(state)
-
-            for i in range(len(state) - lowest[1] - 1):
-                j = i + lowest[1] + 1
-                if i == 0 or (nxt[j] == nxt[j - 1]):
-                    nxt[j] += 1
-                else:
-                    break
-
-            if z == 5:
-                break
-            z += 1
-            nxt = tuple(nxt)
-            if state == nxt:
-                break
+        left, right = 0, sum(sweetness) + 1
+        while left < right:
+            mid = (left + right) // 2
+            acc = groups = 0
+            for section in sweetness:
+                acc += section
+                if acc >= mid:
+                    groups += 1
+                    acc = 0
+            if groups < k + 1:
+                right = mid
             else:
-                state = nxt
-        return res
+                left = mid + 1
+        return left - 1
+
+
+
+
+
+
+
+
