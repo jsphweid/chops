@@ -33,7 +33,11 @@ curr_tree = {0: "dir", 1: "subdir2"}
 root = "dir"
 
 "a\n\taa\n\t\taaa\n\t\t\tfile1234567890123.txt\naaaaaaaaaaaaaaaaaaaaa\n\tsth.png"
-"""
+
+["dir", "\tsubdir1", "\tsubdir2", "\t\tfile.ext"]
+
+this works but it's a ton of work.......
+
 from collections import defaultdict
 class Solution:
     def lengthLongestPath(self, input: str) -> int:
@@ -69,5 +73,31 @@ class Solution:
         for root in roots:
             dfs(root, [root])
         return longest
+what.txt\nhey.txt
+solution titles say stack... let's try using that...
+["dir", "\tsubdir1", "\tsubdir2", "\t\tfile.ext"]
+stack=["dir", "subdir2", "file.ext"] height=2 res=0
+
+"dir\n\tsubdir1\n\t\tfile1.ext\n\t\tsubsubdir1\n\tsubdir2\n\t\tsubsubdir2\n\t\t\tfile2.ext"
+["dir"]
+"""
+
+from collections import defaultdict
+class Solution:
+    def lengthLongestPath(self, input: str) -> int:
+        items, stack, height, res = input.split("\n"), [], 0, 0
+        for item in items:
+            num_tabs, content = item.count("\t"), item.split("\t")[-1]
+            if len(stack) and num_tabs <= height:
+                for _ in range(height - num_tabs + 1):
+                    stack.pop()
+            height = num_tabs
+            stack.append(content)
+            if "." in content:
+                res = max(res, sum(map(len, stack)) + len(stack) - 1)
+        return res
+
+
+
 
 
