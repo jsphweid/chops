@@ -58,6 +58,11 @@ tracing
 15, 'start'
 20, 'end'
 30, 'end'
+
+Looking at lee215's answer... it is more clever to use -1 and 1 instead of 'start'/'end'
+because not only do they sort the same (-1 == end, which comes before 1 == start), but you
+can conveniently use those nums instead of later doing: `1 if s == "start" else -1`
+but I'll leave mine since it's not too bad
 """
 
 class Solution:
