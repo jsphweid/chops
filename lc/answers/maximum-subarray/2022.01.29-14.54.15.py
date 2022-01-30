@@ -12,6 +12,14 @@
 Actually this is like that stock problem... trying to find the largest increase.
 
 s=0 smallest=-1 res=-inf
+
+So it looks like I tried to solve this years ago but couldn't figure it out.
+This time I was successfull but it wasn't perfect.
+
+I knew I had to sum the entire list. I plotted the sums and immediately thought the result
+was the difference between the max and the min but that doesn't actually make sense. Instead,
+it's really all about the "largest" increase, which may be a decrease (if everything is
+decreasing...). Once I understood that I was able to get the result.
 """
 from math import inf
 class Solution:
