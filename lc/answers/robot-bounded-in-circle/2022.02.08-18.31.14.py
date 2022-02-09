@@ -37,15 +37,6 @@ We can do this in less memory O(1) and less time (although still O(n))
 
 After the first time. We really just need to record the shift.
 
-~~Complexity Analysis
-Time - O(n)
-Space - O(1)
-
-So I know my solution works, but the thing I missed was that as long as we don't end with it
-pointing up at a non-(0,0), it will eventually make it back. If it ends pointing down. Then
-it'll make it back in 2 I think. If it ends pointing left or right, then it'll make it back
-in 1 or 3.
-"""
 
 class Solution:
     def isRobotBounded(self, instructions: str) -> bool:
@@ -81,6 +72,35 @@ class Solution:
             if pos == (0, 0):
                 return True
         return False
+
+
+~~Complexity Analysis
+Time - O(n)
+Space - O(1)
+
+So I know my solution works, but the thing I missed was that as long as we don't end with it
+pointing up at a non-(0,0), it will eventually make it back. If it ends pointing down. Then
+it'll make it back in 2 I think. If it ends pointing left or right, then it'll make it back
+in 1 or 3.
+
+An explanation I like is -- it's like a square -- you keep turning 90 and you're eventually
+going to wind up at the place you started.
+"""
+
+class Solution:
+    def isRobotBounded(self, instructions: str) -> bool:
+        shift, pos, directions = 0, (0, 0), [(0,1),(1,0),(0,-1),(-1,0)]
+        for char in instructions:
+            x, y = pos
+            if char == "G":
+                x_change, y_change = directions[shift % 4]
+                pos = (x + x_change, y + y_change)
+            elif char == "L":
+                shift -= 1
+            elif char == "R":
+                shift += 1
+
+        return (pos == (0, 0)) or (shift % 4 != 0)
 
 
 
