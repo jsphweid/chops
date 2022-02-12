@@ -89,13 +89,17 @@ class Solution:
             if node:
                 return node
 
+OK, I read the discussions and it's pretty interesting what the actual solution is. Just subtract the sum
+of all children from the sum of all parents. That will yield the parent node...
+
 """
 class Solution:
     def findRoot(self, tree: List['Node']) -> 'Node':
-        seen = set()
+        parents, childs = 0, 0
         for node in tree:
-            for child in node.children:
-                seen.add(child.val)
+            parents += node.val
+            childs += sum([c.val for c in node.children])
+        diff = parents - childs
         for node in tree:
-            if node.val not in seen:
+            if node.val == diff:
                 return node
