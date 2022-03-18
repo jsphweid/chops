@@ -80,7 +80,7 @@ const commands = {
       );
       console.log("*******Time starts now,", start.toLocaleString());
       console.log("*******File is available here ->", absolutePath);
-      await Editor.openInRandomTextEditor(absolutePath);
+      await Editor.openInSublime(absolutePath);
       const submitCommand = `./lc.sh submit ${relativePath}`;
       console.log("*******Run this when ready to submit ->", submitCommand);
     } catch (e) {
