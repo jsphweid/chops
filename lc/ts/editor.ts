@@ -1,7 +1,7 @@
 import { Utils } from "./utils.ts";
 export namespace Editor {
   export const openInSublime = (file: string): Promise<void> =>
-    Utils.runCommand(["code", file]);
+    Utils.runCommand(["subl", file]);
 
   export const openInTextEdit = (file: string): Promise<void> =>
     Utils.runCommand(["open", "-a", "TextEdit", file]);
