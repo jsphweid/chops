@@ -25,6 +25,10 @@ class Solution:
         		l = mid + 1 # need to go into false conditions, i.e. higher numbers
         	else:
         		r = mid
+        # we need - 1 here because the problem is inverted from our normal
+        # [F, F, F, T, T] where we get the first true
+        # instead it's more like [T, T, F, F, F]... `l` lands on first F
+        # so we need to subtract 1 to get the first true...
         return l - 1
 
 
