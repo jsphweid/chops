@@ -46,8 +46,8 @@ def recurse(word1, word2):
         return len(word1)
     if word1[0] == word2[0]:
         return recurse(word1[1:], word2[1:])
-    insert = 1 + recurse(word2[0] + word1, word2)
-    update = 1 + recurse(word2[0] + word1[1:], word2)
+    insert = 1 + recurse(word1, word2[1:])
+    update = 1 + recurse(word1[1:], word2[1:])
     delete = 1 + recurse(word1[1:], word2)
     return min(insert, update, delete)
 
