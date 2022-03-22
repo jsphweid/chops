@@ -1,5 +1,3 @@
-arr = [6,2,3,1,5,4,9,8,7]
-
 def merge(L, R):
     res, i, j = [], 0, 0
     for _ in range(len(L) + len(R)):
@@ -25,6 +23,10 @@ def merge_sort(lst):
     L = merge_sort(lst[:mid])
     R = merge_sort(lst[mid:])
     return merge(L, R)
-    
-res = merge_sort(arr)
-print(res)
+
+
+if __name__ == "__main__":
+    arr = [6,2,3,1,5,4,9,8,7]
+    res = merge_sort(arr)
+    print(res)
+
