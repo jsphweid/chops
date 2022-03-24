@@ -21,16 +21,11 @@ this doesn't work
 7  1  5  5  6  1  20
  -6 4  0  1  -5  19
 
-~~Complexity Analysis
-Time - 
-Space - 
-
-=== Implemented Approach ===
-
+Oh, I think you can just add all the positive numbers from the diff list...
 
 ~~Complexity Analysis
-Time - 
-Space - 
+Time - O(n)
+Space - O(1)
 """
 
 class Solution:
