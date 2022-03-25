@@ -13,8 +13,8 @@ class Solution:
     def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
         head = ListNode(0, None)
         curr = head
-        remainder = 0
-        while l1 or l2 or remainder:
+        carry = 0
+        while l1 or l2 or carry:
             l1_val, l2_val = 0, 0
             if l1:
                 l1_val = l1.val
@@ -22,7 +22,7 @@ class Solution:
             if l2:
                 l2_val = l2.val
                 l2 = l2.next
-            remainder, nxt_val = divmod(l1_val + l2_val + remainder, 10)
+            carry, nxt_val = divmod(l1_val + l2_val + carry, 10)
             curr.next = ListNode(val=nxt_val, next=None)
             curr = curr.next
         return head.next
