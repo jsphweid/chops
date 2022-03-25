@@ -10,4 +10,4 @@ if at least one odd number... integer divide and add one
 class Solution:
     def countOdds(self, low: int, high: int) -> int:
         add_one = low & 1 or high & 1
-        return (high - low) // 2 + add_one
+        return high - low // 2 + add_one
