@@ -17,12 +17,12 @@ class Solution:
     def carPooling(self, trips: List[List[int]], capacity: int) -> bool:
         lst = []
         for num_passengers, _from, _to in trips:
-            lst.append((_to, -1, num_passengers))
-            lst.append((_from, 1, num_passengers))
+            lst.append((_to, -num_passengers))
+            lst.append((_from, num_passengers))
         lst.sort()
         curr = 0
-        for _, inc, num in lst:
-            curr += inc * num
+        for _, num in lst:
+            curr += num
             if curr > capacity:
                 return False
         return True
