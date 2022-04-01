@@ -18,11 +18,11 @@ saw StefanPochmann's answer, going to replicate that...
 
 class Solution:
     def longestConsecutive(self, nums: List[int]) -> int:
-        res, seen = 0, set(nums)
+        res, nums = 0, set(nums)
         for num in nums:
-            if num - 1 not in seen:
+            if num - 1 not in nums:
                 nxt = num + 1
-                while nxt in seen:
+                while nxt in nums:
                     nxt += 1
                 res = max(res, nxt - num)
         return res
