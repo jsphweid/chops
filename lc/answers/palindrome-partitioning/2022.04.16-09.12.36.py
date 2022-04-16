@@ -34,7 +34,6 @@ recurse("aab", [])
             recurse("", ["a", "a", "b"])
     recurse("b", ["aa"])
         recurse("", ["aa", "b"])
-"""
 
 class Solution:
     def partition(self, s: str) -> List[List[str]]:
@@ -57,3 +56,29 @@ class Solution:
             if s[i] != s[N - i - 1]:
                 return False
         return True
+
+let's try to make it one function for fun...
+partition("aab", [])
+    partition("ab", ["a"]) -> [["a", "a", "b"]]
+        partition("b", ["a", "a"]) -> [["a", "a", "b"]]
+            partition("", ["a", "a", "b"]) -> [["a", "a", "b"]]
+    partition("b", ["aa"]) -> [["aa", "b"]]
+        partition("", ["aa", "b"]) -> [["aa", "b"]]
+
+[["a", "a", "b"]]
+"""
+
+class Solution:
+    def partition(self, s: str, path=[]) -> List[List[str]]:
+        if not s: return [path]
+        res = []
+        for i in range(len(s)):
+            t = s[:i+1]
+            good = True
+            for j in range(len(t) // 2):
+                if s[j] != s[len(t) - j - 1]:
+                    good = False
+                    break
+            if good:
+                res.extend(self.partition(s[i+1:], path + [t]))
+        return res
