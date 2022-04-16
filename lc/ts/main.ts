@@ -40,8 +40,8 @@ const printRedos = (redos: State.Redo[]): void => {
 const commands = {
   new: async (args: string[]) => {
     try {
-      const language = Language.fromCliArgs(args) || Language.PYTHON;
-      const difficulty = Difficulty.fromCliArgs(args) || Difficulty.choose();
+      const language = Language.fromCliArgs(args) ?? Language.PYTHON;
+      const difficulty = Difficulty.fromCliArgs(args) ?? Difficulty.choose();
       const problems = await LeetcodeService.getSuggestedProblems(difficulty);
       const ignored = State.getIgnoredProblems();
       printRedos(State.getRedos().slice(0, 5));
