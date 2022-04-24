@@ -12,6 +12,7 @@ import { Difficulty } from "./difficulty.ts";
 import { SuggestedProblem, Submission } from "./leetcode-service/types.ts";
 import { Utils } from "./utils.ts";
 import { Editor } from "./editor.ts";
+import { Datetime } from "./datetime.ts";
 import { enhanceStartingCode } from "./leetcode-service/code.ts";
 
 const ask = new Ask();
@@ -113,12 +114,16 @@ const commands = {
       language: solutionDetails.language,
     });
     if (Submission.isAccepted(result)) {
+      const finishDate = new Date();
       State.registerSubmission(filepath, {
-        date: new Date().toISOString(),
+        date: finishDate.toISOString(),
         leetcodeSubmissionId: result.submissionId,
         type: State.SubmissionType.SuccessfulSubmission,
       });
+      const dateStarted = new Date(solutionDetails.timeStarted);
+      const diff = Datetime.getMinutesBetween(dateStarted, finishDate);
       console.log("Submission Succeeded!!!");
+      console.log(`It took you ${diff} minutes to complete...`);
     } else {
       const submissionLink = `https://leetcode.com/submissions/detail/${result.submissionId}/`;
       console.log(`Submission failed... More details here: ${submissionLink}`);
