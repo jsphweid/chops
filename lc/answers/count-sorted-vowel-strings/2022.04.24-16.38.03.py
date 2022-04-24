@@ -6,10 +6,6 @@ but they are only asking for count
 === Brute Force Approach ===
 just build all the answers and then count them
 
-~~Complexity Analysis
-Time - 
-Space - 
-
 class Solution:
     def countVowelStrings(self, n: int) -> int:
         letters = {
@@ -31,12 +27,9 @@ class Solution:
 === Implemented Approach ===
 did a bunch of work on the board and determined the DP approach
 
-
 ~~Complexity Analysis
 Time - O(n) (since aeiou is always 5)
 Space - O(n)
-
-temp=[]
 """
 
 class Solution:
