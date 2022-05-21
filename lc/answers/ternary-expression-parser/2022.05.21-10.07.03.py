@@ -34,32 +34,33 @@ class Solution:
                     expression = stack.pop() if stack else ""
                     expression += result + rest
             else:
-                stack.append(expression[:2])
-                expression = expression[2:]
-        return expression
-
-
-Going for a different approach now. I'm not completely sure why it fails, but 
-"""
-class Solution:
-    def parseTernary(self, expression: str) -> str:
-        stack = []
-        while len(expression) > 1:
-            if expression[1] == "?" and expression[3] == ":":
-                if expression[0] == "T":
-                    if stack:
-                        rest = expression[5:]
-                        expression = stack.pop() + expression[2] + rest
-                    else:
-                        return expression[2]
-                else:
-                    result = expression[4]
-                    rest = expression[5:]
-                    expression = stack.pop() if stack else ""
-                    expression += result + rest
-            else:
                 if expression[1] == "?" and expression[0] == "T" and not stack and expression[2].isdigit():
                     return expression[2]
                 stack.append(expression[:2])
                 expression = expression[2:]
         return expression
+
+This is just really bad code though. (but fast)
+
+Going for a different approach now. I'm not completely sure why it fails, but 
+i=3
+res = "F"
+"T?T?F:5:3"
+
+reading pochmann...
+stack=[3:5:F?T] going backwards... oh that's clever!
+
+stack = 3:F?T
+T?F:3
+"""
+
+class Solution:
+    def parseTernary(self, expr: str) -> str:
+        s = []
+        for char in reversed(expr):
+            s.append(char)
+            if len(s) > 1 and s[-2] == "?":
+                a, _, c, __, e = s.pop(), s.pop(), s.pop(), s.pop(), s.pop()
+                s.append(c if a == "T" else e)
+        return s[0]
+
