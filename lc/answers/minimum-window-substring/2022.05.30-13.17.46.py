@@ -21,12 +21,6 @@ Space - O(t)
 """
 from collections import Counter
 
-def is_eligible(counts):
-    for v in counts.values():
-        if v > 0:
-            return False
-    return True
-
 """
 ADOBECODEBANC ABC
 0123456789abc
@@ -37,14 +31,19 @@ class Solution:
         i = 0
         counts = Counter(t)
         best = (float("inf"), "")
+        positives = sum(counts.values())
         for j, char in enumerate(s):
             if char in counts:
+                if counts[char] > 0:
+                    positives -= 1
                 counts[char] -= 1
                 while i < j and (s[i] not in counts or counts[s[i]] < 0):
                     if s[i] in counts:
+                        if counts[s[i]] > 0:
+                            positives += 1
                         counts[s[i]] += 1
                     i += 1
-                if counts[char] <= 0 and is_eligible(counts):
+                if counts[char] <= 0 and positives == 0:
                     best = min(best, (j - i + 1, s[i:j+1]))
         return best[1]
 
