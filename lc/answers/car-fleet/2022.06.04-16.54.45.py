@@ -40,7 +40,6 @@ position + speed * x = target
 ~~Complexity Analysis
 Time - O(nlogn)
 Space - O(n)
-"""
 
 class Solution:
     def carFleet(self, target: int, position: List[int], speed: List[int]) -> int:
@@ -54,6 +53,22 @@ class Solution:
             if stack:
                 p, s = stack.pop()
                 timesteps = (target - p) / s
+                num_groups += 1
+        return num_groups
+
+saw lee215s... decided to clean mine up a bit
+"""
+
+class Solution:
+    def carFleet(self, target: int, position: List[int], speed: List[int]) -> int:
+        stack = [(target - p) / s for p, s in sorted(zip(position, speed))]
+        timesteps = stack.pop()
+        num_groups = 1
+        while stack:
+            while stack and stack[-1] <= timesteps:
+                stack.pop()
+            if stack:
+                timesteps = stack.pop()
                 num_groups += 1
         return num_groups
 
